@@ -17,9 +17,6 @@ app.ws("/", (ws, req) => {
       case "connection":
         connectionHandler(ws, msg);
         break;
-      case "disconnection":
-        broadcastConnection(ws, msg);
-        break;
       case "draw":
         broadcastConnection(ws, msg);
         break;
@@ -55,10 +52,12 @@ app.get("/image", (req, res) => {
     return res.status(500).json("error");
   }
 });
+
 connectionHandler = (ws, msg) => {
   ws.id = msg.id;
   broadcastConnection(ws, msg);
 };
+
 broadcastConnection = (ws, msg) => {
   aWss.clients.forEach((client) => {
     if (client.id === msg.id) {

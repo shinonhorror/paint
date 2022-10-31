@@ -89,7 +89,6 @@ const Toolbar = () => {
         type="color"
         style={{ marginLeft: "16px" }}
       />
-
       <button
         className="toolbar__btn undo"
         onClick={() => {
@@ -107,8 +106,9 @@ const Toolbar = () => {
       <button
         className="toolbar__btn redo"
         onClick={() => canvasState.redo()}
-      ></button>
+      ></button>    
       <button className="toolbar__btn save" onClick={() => download()}></button>
+      <button className="exit">Выйти</button>
     </div>
   );
 };

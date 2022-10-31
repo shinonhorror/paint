@@ -25,7 +25,7 @@ export default class Brush extends Tool {
       })
     );
     this.mouseDown = true;
-    this.ctx.beginPath(); // начинаем рисовать новую линию
+    this.ctx.beginPath(); 
     this.ctx.moveTo(
       e.pageX - e.target.offsetLeft,
       e.pageY - e.target.offsetTop

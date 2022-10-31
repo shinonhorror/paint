@@ -13,6 +13,7 @@ import Circle from "../tools/Cirlce";
 import Line from "../tools/Line";
 import Eraser from "../tools/Eraser";
 import axios from "axios";
+import Tool from "../tools/Tool";
 
 const Canvas = observer(() => {
   const canvasRef = useRef();
@@ -20,7 +21,7 @@ const Canvas = observer(() => {
   const [modal, setModal] = useState(true);
   const params = useParams();
 
-  useEffect(() => {
+  const autoUpdateImage = () => {
     canvasState.setCanvas(canvasRef.current);
     let ctx = canvasRef.current.getContext("2d");
     axios
@@ -44,6 +45,10 @@ const Canvas = observer(() => {
           );
         };
       });
+  };
+
+  useEffect(() => {
+    autoUpdateImage();
   }, []);
 
   useEffect(() => {
@@ -61,23 +66,11 @@ const Canvas = observer(() => {
           })
         );
       };
-      // socket.close = () => {
-      //   socket.send(
-      //     JSON.stringify({
-      //       id: params.id,
-      //       username: canvasState.username,
-      //       method: "disconnection",
-      //     })
-      //   );
-      // };
       socket.onmessage = (e) => {
         let msg = JSON.parse(e.data);
         switch (msg.method) {
           case "connection":
             console.log(`Подключен пользователь ${msg.username}`);
-            break;
-          case "disconnection":
-            console.log(`Отключен пользователь ${msg.username}`);
             break;
           case "draw":
             drawHandler(msg);
@@ -90,7 +83,6 @@ const Canvas = observer(() => {
   const drawHandler = (msg) => {
     const figure = msg.figure;
     const ctx = canvasRef.current.getContext("2d");
-
     switch (figure.type) {
       case "brush":
         Brush.draw(ctx, figure.x, figure.y, figure.lineWidth, figure.color);
@@ -117,6 +109,11 @@ const Canvas = observer(() => {
       case "undo":
         canvasState.undo();
         break;
+      case "size":
+        canvasState.setCanvasWidth(figure.w);
+        canvasState.setCanvasHeight(figure.h);
+        autoUpdateImage();
+        break;
       case "finish":
         ctx.beginPath();
         break;
@@ -124,10 +121,10 @@ const Canvas = observer(() => {
   };
 
   const mouseDownHandler = () => {
+    canvasState.pushToUndo(canvasRef.current.toDataURL());
     axios.post(`http://localhost:5000/image?id=${params.id}`, {
       img: canvasRef.current.toDataURL(),
     });
-    canvasState.pushToUndo(canvasRef.current.toDataURL());
   };
 
   const connectionHandler = () => {

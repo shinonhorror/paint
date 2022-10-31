@@ -30,6 +30,12 @@ class CanvasState {
     this.username = username;
   }
 
+  setCanvasWidth(width) {
+    this.canvas.width = width;
+  }
+  setCanvasHeight(height) {
+    this.canvas.height = height;
+  }
   pushToUndo(data) {
     this.undoList.push(data);
   }
@@ -48,7 +54,7 @@ class CanvasState {
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
       };
-    } 
+    }
   }
 
   redo() {
