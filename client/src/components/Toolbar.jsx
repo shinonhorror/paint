@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext} from "react";
 import canvasState from "../store/canvasState";
 import toolState from "../store/toolState";
+import { AuthContext } from "../context";
 import "../styles/toolbar.scss";
 import Brush from "../tools/Brush";
 import Circle from "../tools/Cirlce";
@@ -9,6 +10,14 @@ import Line from "../tools/Line";
 import Rect from "../tools/Rect";
 
 const Toolbar = () => {
+  const { isAuth, setIsAuth } = useContext(AuthContext);
+  const logout = (e) => {
+    e.preventDefault();
+    setIsAuth(false);
+    localStorage.removeItem("auth");
+    localStorage.removeItem("id");
+    localStorage.removeItem("name");
+  };
   const changeColor = (e) => {
     toolState.setStrokeColor(e.target.value);
     toolState.setFillColor(e.target.value);
@@ -18,9 +27,9 @@ const Toolbar = () => {
     const a = document.createElement("a");
     a.href = dataURL;
     a.download = canvasState.sessionId + ".jpg";
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
   return (
     <div className="toolbar">
@@ -106,9 +115,9 @@ const Toolbar = () => {
       <button
         className="toolbar__btn redo"
         onClick={() => canvasState.redo()}
-      ></button>    
+      ></button>
       <button className="toolbar__btn save" onClick={() => download()}></button>
-      <button className="exit">Выйти</button>
+      <button className="exit" onClick={(e)=>logout(e)}>Выйти</button>
     </div>
   );
 };

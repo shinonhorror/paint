@@ -1,43 +1,30 @@
-import React from "react";
-import Toolbar from "./components/Toolbar";
-import SettingBar from "./components/SettingBar";
-import Canvas from "./components/Canvas";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { AuthContext} from "./context";
+import AppRouter from "./components/AppRouter";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./styles/app.scss";
+
 const App = () => {
+  const [isAuth, setIsAuth] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      setIsAuth(true);
+    }
+  }, []);
   return (
-    <Router>
-      <div className="app">
-        <Routes>
-          <Route
-            path="/:id"
-            element={
-              <>
-                <Toolbar />
-                <SettingBar />
-                <Canvas />
-              </>
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <>
-                <Toolbar />
-                <SettingBar />
-                <Canvas />
-                <Navigate to={`/f${(+new Date()).toString(16)}`} replace />
-              </>
-            }
-          />
-        </Routes>
-      </div>
-    </Router>
+    <AuthContext.Provider
+      value={{
+        isAuth,
+        setIsAuth,
+      }}
+    >
+      <Router>
+        <div className="app">
+          <AppRouter />
+        </div>
+      </Router>
+    </AuthContext.Provider>
   );
 };
 

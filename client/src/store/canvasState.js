@@ -5,10 +5,10 @@ import { makeAutoObservable } from "mobx";
 class CanvasState {
   canvas = null;
   socket = null;
-  sessionId = null;
+  sessionId = JSON.parse(localStorage.getItem("id")) || null;
   undoList = [];
   redoList = [];
-  username = "";
+  username = localStorage.getItem("name") || "";
 
   constructor() {
     makeAutoObservable(this);
